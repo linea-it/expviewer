@@ -5671,6 +5671,10 @@ onetime@^2.0.0:
   dependencies:
     mimic-fn "^1.0.0"
 
+openseadragon@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/openseadragon/-/openseadragon-2.4.0.tgz#d0b28b37a953602c82432a0dbd8a3779dadf756f"
+
 opn@5.4.0, opn@^5.1.0:
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/opn/-/opn-5.4.0.tgz#cb545e7aab78562beb11aa3bfabc7042e1761035"
@@ -6805,7 +6809,7 @@ react-dev-utils@^7.0.3:
     strip-ansi "5.0.0"
     text-table "0.2.0"
 
-react-dom@16.8.2:
+react-dom@^16.8.2:
   version "16.8.2"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.8.2.tgz#7c8a69545dd554d45d66442230ba04a6a0a3c3d3"
   dependencies:
@@ -6876,7 +6880,11 @@ react-scripts@2.1.5:
   optionalDependencies:
     fsevents "1.2.4"
 
-react@16.8.2:
+react-with-addons@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/react-with-addons/-/react-with-addons-0.0.1.tgz#3e833b4bd787d6a339b59c5cf075329166940e37"
+
+react@^16.8.2:
   version "16.8.2"
   resolved "https://registry.yarnpkg.com/react/-/react-16.8.2.tgz#83064596feaa98d9c2857c4deae1848b542c9c0c"
   dependencies:
