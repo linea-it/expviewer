@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  iipserver:
+    image: linea/iipserver:latest
+    environment:
+      - LOGFILE=/tmp/iipsrv.log
+      - VERBOSITY=10
+      - FILESYSTEM_PREFIX=/images/
+      - MAX_IMAGE_CACHE_SIZE=4000
+      - MAX_CVT=30000
+      - JPEG_QUALITY=90
+    command: ./start_fcgi.sh
+    volumes:
+      - ./images:/images
+  nginx:
+    build: .
+    ports:
+      - 80:8080
+    cap_drop:
+      - ALL
+    depends_on:
+      - iipserver
