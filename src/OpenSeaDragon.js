@@ -91,7 +91,7 @@ class OpenSeaDragon extends React.Component {
         this.viewer.addTiledImage({
             tileSource: {
                 "@context": "./context.json",
-                "@id": `http://localhost/iipserver?IIIF=exps/${name}.tif`,
+                "@id": `${window.origin}/iipserver?IIIF=exps/${name}.tif`,
                 height: 4000,
                 width: 4000,
                 protocol: "http://iiif.io/api/image",
