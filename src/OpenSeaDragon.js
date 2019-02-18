@@ -4,21 +4,21 @@ import './index.css';
 import OpenSeadragonLib from 'openseadragon';
 
 const lsstFOV = [
-    [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-    [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-    [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-    [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-    [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0]
+    ['NNN', 'NNN', 'NNN', '065', '068', '071', '110', '113', '116', '155', '158', '161', 'NNN', 'NNN', 'NNN'],
+    ['NNN', 'NNN', 'NNN', '064', '067', '070', '109', '112', '115', '154', '157', '160', 'NNN', 'NNN', 'NNN'],
+    ['NNN', 'NNN', 'NNN', '063', '066', '069', '108', '111', '114', '153', '156', '159', 'NNN', 'NNN', 'NNN'],
+    ['020', '023', '026', '056', '059', '062', '101', '104', '107', '146', '149', '152', '182', '185', '188'],
+    ['019', '022', '025', '055', '058', '061', '100', '103', '106', '145', '148', '151', '181', '184', '187'],
+    ['018', '021', '024', '054', '057', '060', '099', '102', '105', '144', '147', '150', '180', '183', '186'],
+    ['011', '014', '017', '047', '050', '053', '092', '095', '098', '137', '140', '143', '173', '176', '179'],
+    ['010', '013', '016', '046', '049', '052', '091', '094', '097', '136', '139', '142', '172', '175', '178'],
+    ['009', '012', '015', '045', '048', '051', '090', '093', '096', '135', '138', '141', '171', '174', '177'],
+    ['002', '005', '008', '038', '041', '044', '083', '086', '089', '128', '131', '134', '164', '167', '170'],
+    ['001', '004', '007', '037', '040', '043', '082', '085', '088', '127', '130', '133', '163', '166', '169'],
+    ['000', '003', '006', '036', '039', '042', '081', '084', '087', '126', '129', '132', '162', '165', '168'],
+    ['NNN', 'NNN', 'NNN', '029', '032', '035', '074', '077', '080', '119', '122', '125', 'NNN', 'NNN', 'NNN'],
+    ['NNN', 'NNN', 'NNN', '028', '031', '034', '073', '076', '079', '118', '121', '124', 'NNN', 'NNN', 'NNN'],
+    ['NNN', 'NNN', 'NNN', '027', '030', '033', '072', '075', '078', '117', '120', '123', 'NNN', 'NNN', 'NNN']
 ];
 
 class OpenSeaDragon extends React.Component {
@@ -74,7 +74,7 @@ class OpenSeaDragon extends React.Component {
             constrainDuringPan: false,
             defaultZoomLevel: 0.04,
             minZoomLevel: 0.04,
-            maxZoomLevel: 10,
+            maxZoomLevel: 400,
             zoomInButton: "zoom-in",
             zoomOutButton: "zoom-out",
             homeButton: "reset",
@@ -89,21 +89,22 @@ class OpenSeaDragon extends React.Component {
 
     addImage = (x,y,name) => {
         this.viewer.addTiledImage({
-            tileSource: {
-                "@context": "./context.json",
-                "@id": `${window.origin}/iipserver?IIIF=exps/${name}.tif`,
-                height: 4000,
-                width: 4000,
-                protocol: "http://iiif.io/api/image",
-                tiles: [
-                    {
-                        scaleFactors: [1, 2, 4, 8, 16, 32],
-                        width: 4000
-                    }
-                ]
-            },
-            x: x,
-            y: y
+          tileSource: {
+            "@context": "./context.json",
+            // "@id": `${window.origin}/iipserver?IIIF=exps/${name}.tif`,
+            "@id": `http://expviewer.linea.gov.br/iipserver?IIIF=exps/${name}.tif`,
+            height: 4010,
+            width: 4010,
+            protocol: "http://iiif.io/api/image",
+            tiles: [
+              {
+                scaleFactors: [1, 2, 4, 8, 16, 32, 64, 128, 256],
+                width: 4010
+              }
+            ]
+          },
+          x: x,
+          y: y
         });
     }
 
@@ -120,9 +121,10 @@ class OpenSeaDragon extends React.Component {
         position = 0;
         lsstFOV.forEach(lineArr => {
           lineArr.forEach(el => {
-            if (el !== 0) {
-              const padNum = this.pad(count, 3);
-              this.addImage(line, position, padNum);
+            if (el !== 'NNN') {
+              // const padNum = this.pad(count, 3);
+              // console.log(el)
+              this.addImage(position, line, el);
               count = count + 1;
             }
             position = position + 1;
