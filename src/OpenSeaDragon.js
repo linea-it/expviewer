@@ -4,24 +4,32 @@ import './index.css';
 import OpenSeadragonLib from 'openseadragon';
 
 const lsstFOV = [
-    ['NNN', 'NNN', 'NNN', '065', '068', '071', '110', '113', '116', '155', '158', '161', 'NNN', 'NNN', 'NNN'],
-    ['NNN', 'NNN', 'NNN', '064', '067', '070', '109', '112', '115', '154', '157', '160', 'NNN', 'NNN', 'NNN'],
-    ['NNN', 'NNN', 'NNN', '063', '066', '069', '108', '111', '114', '153', '156', '159', 'NNN', 'NNN', 'NNN'],
-    ['020', '023', '026', '056', '059', '062', '101', '104', '107', '146', '149', '152', '182', '185', '188'],
-    ['019', '022', '025', '055', '058', '061', '100', '103', '106', '145', '148', '151', '181', '184', '187'],
-    ['018', '021', '024', '054', '057', '060', '099', '102', '105', '144', '147', '150', '180', '183', '186'],
-    ['011', '014', '017', '047', '050', '053', '092', '095', '098', '137', '140', '143', '173', '176', '179'],
-    ['010', '013', '016', '046', '049', '052', '091', '094', '097', '136', '139', '142', '172', '175', '178'],
-    ['009', '012', '015', '045', '048', '051', '090', '093', '096', '135', '138', '141', '171', '174', '177'],
-    ['002', '005', '008', '038', '041', '044', '083', '086', '089', '128', '131', '134', '164', '167', '170'],
-    ['001', '004', '007', '037', '040', '043', '082', '085', '088', '127', '130', '133', '163', '166', '169'],
-    ['000', '003', '006', '036', '039', '042', '081', '084', '087', '126', '129', '132', '162', '165', '168'],
-    ['NNN', 'NNN', 'NNN', '029', '032', '035', '074', '077', '080', '119', '122', '125', 'NNN', 'NNN', 'NNN'],
-    ['NNN', 'NNN', 'NNN', '028', '031', '034', '073', '076', '079', '118', '121', '124', 'NNN', 'NNN', 'NNN'],
-    ['NNN', 'NNN', 'NNN', '027', '030', '033', '072', '075', '078', '117', '120', '123', 'NNN', 'NNN', 'NNN']
+    ['NNN', 'NNN', 'NNN', '168', '169', '170', '177', '178', '179', '186', '187', '188', 'NNN', 'NNN', 'NNN'],
+    ['NNN', 'NNN', 'NNN', '165', '166', '167', '174', '175', '176', '183', '184', '185', 'NNN', 'NNN', 'NNN'],
+    ['NNN', 'NNN', 'NNN', '162', '163', '164', '171', '172', '173', '180', '181', '182', 'NNN', 'NNN', 'NNN'],
+    ['123', '124', '125', '132', '133', '134', '141', '142', '143', '150', '151', '152', '159', '160', '161'],
+    ['120', '121', '122', '129', '130', '131', '138', '139', '140', '147', '148', '149', '156', '157', '158'],
+    ['117', '118', '119', '126', '127', '128', '135', '136', '137', '144', '145', '146', '153', '154', '155'],
+    ['078', '079', '080', '087', '088', '089', '096', '097', '098', '105', '106', '107', '114', '115', '116'],
+    ['075', '076', '077', '084', '085', '086', '093', '094', '095', '102', '103', '104', '111', '112', '113'],
+    ['072', '073', '074', '081', '082', '083', '090', '091', '092', '099', '100', '101', '108', '109', '110'],
+    ['033', '034', '035', '042', '043', '044', '051', '052', '053', '060', '061', '062', '069', '070', '071'],
+    ['030', '031', '032', '039', '040', '041', '048', '049', '050', '057', '058', '059', '066', '067', '068'],
+    ['027', '028', '029', '036', '037', '038', '045', '046', '047', '054', '055', '056', '063', '064', '065'],
+    ['NNN', 'NNN', 'NNN', '006', '007', '008', '015', '016', '017', '024', '025', '026', 'NNN', 'NNN', 'NNN'],
+    ['NNN', 'NNN', 'NNN', '003', '004', '005', '012', '013', '014', '021', '022', '023', 'NNN', 'NNN', 'NNN'],
+    ['NNN', 'NNN', 'NNN', '000', '001', '002', '009', '010', '011', '018', '019', '020', 'NNN', 'NNN', 'NNN']
 ];
 
+
 class OpenSeaDragon extends React.Component {
+    state = {
+      ccd: false,
+      raft: false,
+      ccds: [],
+      rafts: []
+    }
+
     render() {
         let { id } = this.props
         return (
@@ -36,6 +44,18 @@ class OpenSeaDragon extends React.Component {
             </div>
             <div className="openseadragon" id={id} />
             <ul className="ocd-toolbar">
+              <li>
+                {/* eslint-disable-next-line*/}
+                <a onClick={this.showRaft}>
+                  <i className="fa fa-th-large" />
+                </a>
+              </li>
+              <li>
+                {/* eslint-disable-next-line*/}
+                <a onClick={this.showCcd}>
+                  <i className="fa fa-th" />
+                </a>
+              </li>
               <li>
                 {/* eslint-disable-next-line*/}
                 <a id="zoom-in">
@@ -65,25 +85,122 @@ class OpenSeaDragon extends React.Component {
         );
     }
 
+    showRaft = async () => {
+      if (!this.state.raft) {
+        this.setState({raft: true})
+        let count, line, position;
+        count = 0;
+        line = 0;
+        position = 0;
+        const rafts = [];
+        lsstFOV.forEach(lineArr => {
+          lineArr.forEach(el => {
+            if (el !== 'NNN') {
+              const raft = this.addRaftOverlay(position, line, el);
+              rafts.push(raft);
+              count = count + 1;
+            }
+            position = position + 1;
+          });
+          position = 0;
+          line = line + 1;
+        });
+        this.setState({ rafts: rafts });
+      }
+      else {
+        this.state.rafts.forEach(raft => {
+          this.viewer.removeOverlay(raft);
+        })
+        this.setState({ raft: false, rafts: [] })
+      }
+    }
+
+    addRaftOverlay = (x, y) => {
+      const raft = document.createElement("div");
+      raft.className = "raft-overlay";
+      if (x % 3 === 0 && y % 3 === 0)
+        this.viewer.addOverlay({
+          element: raft,
+          location: new OpenSeadragonLib.Rect(x, y, 3, 3),
+          rotationMode: OpenSeadragonLib.OverlayRotationMode.BOUNDING_BOX
+        });
+      return raft;
+    }
+
+    addCcdOverlay = (x, y, name) => {
+      const ccd = document.createElement("div");
+      ccd.className = "ccd-overlay";
+      ccd.textContent = name;
+      this.viewer.addOverlay({
+        element: ccd,
+        location: new OpenSeadragonLib.Rect(x, y, 1, 1),
+        rotationMode: OpenSeadragonLib.OverlayRotationMode.BOUNDING_BOX
+      });
+      return ccd;
+    }
+
+    showCcd = async () => {
+      if (!this.state.ccd) {
+        this.setState({ccd: true})
+        let count, line, position;
+        count = 0;
+        line = 0;
+        position = 0;
+        const ccds = []
+        lsstFOV.forEach(lineArr => {
+          lineArr.forEach(el => {
+            if (el !== 'NNN') {
+              const ccd = this.addCcdOverlay(position, line, el);
+              ccds.push(ccd);
+              count = count + 1;
+            }
+            position = position + 1;
+          });
+          position = 0;
+          line = line + 1;
+        });
+        this.setState({ ccds: ccds });
+      }
+      else {
+        this.state.ccds.forEach(ccd => {
+          this.viewer.removeOverlay(ccd);
+        })
+        this.setState({ ccd: false, ccds: [] })
+      }
+    }
+
+    addCcdOverlay = (x, y, name) => {
+      const ccd = document.createElement("div");
+      ccd.className = "ccd-overlay";
+      ccd.textContent = name;
+      this.viewer.addOverlay({
+        id: 'ccd',
+        element: ccd,
+        location: new OpenSeadragonLib.Rect(x, y, 1, 1),
+        rotationMode: OpenSeadragonLib.OverlayRotationMode.BOUNDING_BOX
+      });
+      return ccd;
+    }
+
     initSeaDragon = async () => {
         let self = this
         let { id } = this.props
         self.viewer = OpenSeadragonLib({
-            id: id,
-            visibilityRatio: 1.0,
-            constrainDuringPan: false,
-            defaultZoomLevel: 0.04,
-            minZoomLevel: 0.04,
-            maxZoomLevel: 400,
-            zoomInButton: "zoom-in",
-            zoomOutButton: "zoom-out",
-            homeButton: "reset",
-            fullPageButton: "full-page",
-            nextButton: "next",
-            previousButton: "previous",
-            showNavigator: true,
-            navigatorId: "navigator",
-            tileSources: [],
+          id: id,
+          visibilityRatio: 0.01,
+          constrainDuringPan: false,
+          defaultZoomLevel: 0.04,
+          minZoomLevel: 0.04,
+          maxZoomLevel: 400,
+          zoomInButton: "zoom-in",
+          zoomOutButton: "zoom-out",
+          homeButton: "reset",
+          fullPageButton: "full-page",
+          nextButton: "next",
+          showNavigator: true,
+          navigatorId: "navigator",
+          // debugMode: true,
+          tileSources: []
         });
     }
 
@@ -91,27 +208,22 @@ class OpenSeaDragon extends React.Component {
         this.viewer.addTiledImage({
           tileSource: {
             "@context": "./context.json",
-            "@id": `${window.origin}/iipserver?IIIF=exps/${name}.tif`,
-            // "@id": `http://expviewer.linea.gov.br/iipserver?IIIF=exps/${name}.tif`,
-            height: 4010,
-            width: 4010,
+            // "@id": `${window.origin}/iipserver?IIIF=exps/${name}.tif`,
+            "@id": `http://expviewer.linea.gov.br/iipserver?IIIF=exps/${name}.tif`,
+            height: 4100,
+            width: 4100,
             protocol: "http://iiif.io/api/image",
             tiles: [
               {
                 scaleFactors: [1, 2, 4, 8, 16, 32, 64, 128, 256],
-                width: 4010
+                width: 4100,
+                tileOverlap: 0
               }
             ]
           },
           x: x,
           y: y
         });
-    }
-
-    pad = (num, size) => {
-        var s = num + "";
-        while (s.length < size) s = "0" + s;
-        return s;
     }
 
     renderImages = () => {
@@ -122,8 +234,6 @@ class OpenSeaDragon extends React.Component {
         lsstFOV.forEach(lineArr => {
           lineArr.forEach(el => {
             if (el !== 'NNN') {
-              // const padNum = this.pad(count, 3);
-              // console.log(el)
               this.addImage(position, line, el);
               count = count + 1;
             }

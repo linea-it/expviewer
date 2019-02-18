@@ -22,3 +22,20 @@ html, body, #container, .app {
   .ocd-toolbar a:hover {background: rgba(158, 46, 0, 0.6); text-decoration:none}
   .ocd-toolbar a > i {display:block; width:30px; height:30px; line-height:30px; font-size:15px; padding-top:2px}
   /* endregion */
+  .raft-overlay {
+    outline: 0.1px solid blue;
+    color: blue;
+    opacity: 0.3;
+  }
+  .ccd-overlay {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    outline: 0.1px dashed red;
+    color: red;
+    opacity: 0.4;
+  }
+
+  .hidden {
+    display: none !important;
+  }
