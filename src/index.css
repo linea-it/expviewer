@@ -23,17 +23,17 @@ html, body, #container, .app {
   .ocd-toolbar a > i {display:block; width:30px; height:30px; line-height:30px; font-size:15px; padding-top:2px}
   /* endregion */
   .raft-overlay {
-    outline: 0.1px solid blue;
-    color: blue;
-    opacity: 0.3;
+    outline: 1px solid #1DFF00;
+    color: #1DFF00;
+    opacity: 1;
   }
   .ccd-overlay {
     display: flex !important;
     justify-content: center;
     align-items: center;
-    outline: 0.1px dashed yellow;
-    color: yellow;
-    opacity: 0.4;
+    font-size: 10px;
+    color: #FFE848;
+    opacity: 1;
   }
 
   .hidden {

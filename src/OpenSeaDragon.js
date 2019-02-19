@@ -205,11 +205,11 @@ class OpenSeaDragon extends React.Component {
     }
 
     addImage = (x,y,name) => {
+      const url = process.env.NODE_ENV === 'development' ? `http://expviewer.linea.gov.br/iipserver?IIIF=exps/${name}.tif` :`${window.origin}/iipserver?IIIF=exps/${name}.tif`;
         this.viewer.addTiledImage({
           tileSource: {
             "@context": "./context.json",
-            "@id": `${window.origin}/iipserver?IIIF=exps/${name}.tif`,
-            // "@id": `http://expviewer.linea.gov.br/iipserver?IIIF=newexps/${name}.tif`,
+            "@id": url,
             height: 4150,
             width: 4150,
             protocol: "http://iiif.io/api/image",
