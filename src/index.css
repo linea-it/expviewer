@@ -31,8 +31,8 @@ html, body, #container, .app {
     display: flex !important;
     justify-content: center;
     align-items: center;
-    outline: 0.1px dashed red;
-    color: red;
+    outline: 0.1px dashed yellow;
+    color: yellow;
     opacity: 0.4;
   }
 
