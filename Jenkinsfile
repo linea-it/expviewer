@@ -12,7 +12,7 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'yarn install'
-                sh 'yarn lint'
+                // sh 'yarn lint'
             }
         }
         stage('Building and push image') {
