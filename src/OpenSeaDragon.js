@@ -3,6 +3,7 @@ import './index.css';
 
 import OpenSeadragonLib from 'openseadragon';
 
+/*eslint-disable */
 const lsstFOV = [
     ['NNN', 'NNN', 'NNN', '168', '169', '170', '177', '178', '179', '186', '187', '188', 'NNN', 'NNN', 'NNN'],
     ['NNN', 'NNN', 'NNN', '165', '166', '167', '174', '175', '176', '183', '184', '185', 'NNN', 'NNN', 'NNN'],
@@ -20,240 +21,232 @@ const lsstFOV = [
     ['NNN', 'NNN', 'NNN', '003', '004', '005', '012', '013', '014', '021', '022', '023', 'NNN', 'NNN', 'NNN'],
     ['NNN', 'NNN', 'NNN', '000', '001', '002', '009', '010', '011', '018', '019', '020', 'NNN', 'NNN', 'NNN']
 ];
-
+/*eslint-enable */
 
 class OpenSeaDragon extends React.Component {
-    state = {
-      ccd: false,
-      raft: false,
-      ccds: [],
-      rafts: []
-    }
+  state = {
+    ccd: false,
+    raft: false,
+    ccds: [],
+    rafts: [],
+  };
 
-    render() {
-        let { id } = this.props
-        return (
-          <div
-            className="ocd-div"
-            ref={node => {
-              this.el = node;
-            }}
-          >
-            <div className="navigator-wrapper c-shadow">
-              <div id="navigator" />
-            </div>
-            <div className="openseadragon" id={id} />
-            <ul className="ocd-toolbar">
-              <li>
-                {/* eslint-disable-next-line*/}
-                <a onClick={this.showRaft}>
-                  <i className="fa fa-th-large" />
-                </a>
-              </li>
-              <li>
-                {/* eslint-disable-next-line*/}
-                <a onClick={this.showCcd}>
-                  <i className="fa fa-th" />
-                </a>
-              </li>
-              <li>
-                {/* eslint-disable-next-line*/}
-                <a id="zoom-in">
-                  <i className="fa fa-plus" />
-                </a>
-              </li>
-              <li>
-                {/* eslint-disable-next-line*/}
-                <a id="reset">
-                  <i className="fa fa-circle" />
-                </a>
-              </li>
-              <li>
-                {/* eslint-disable-next-line*/}
-                <a id="zoom-out">
-                  <i className="fa fa-minus" />
-                </a>
-              </li>
-              <li>
-                {/* eslint-disable-next-line*/}
-                <a id="full-page">
-                  <i className="fa fa-desktop" />
-                </a>
-              </li>
-            </ul>
-          </div>
-        );
-    }
+  render() {
+    return (
+      <div
+        className="ocd-div"
+        ref={node => {
+          this.el = node;
+        }}
+      >
+        <div className="navigator-wrapper c-shadow">
+          <div id="navigator" />
+        </div>
+        <div className="openseadragon" id="ocd-viewer" />
+        <ul className="ocd-toolbar">
+          <li>
+            {/* eslint-disable-next-line*/}
+            <a onClick={this.showRaft}>
+              <i className="fa fa-th-large" />
+            </a>
+          </li>
+          <li>
+            {/* eslint-disable-next-line*/}
+            <a onClick={this.showCcd}>
+              <i className="fa fa-th" />
+            </a>
+          </li>
+          <li>
+            {/* eslint-disable-next-line*/}
+            <a id="zoom-in">
+              <i className="fa fa-plus" />
+            </a>
+          </li>
+          <li>
+            {/* eslint-disable-next-line*/}
+            <a id="reset">
+              <i className="fa fa-circle" />
+            </a>
+          </li>
+          <li>
+            {/* eslint-disable-next-line*/}
+            <a id="zoom-out">
+              <i className="fa fa-minus" />
+            </a>
+          </li>
+          <li>
+            {/* eslint-disable-next-line*/}
+            <a id="full-page">
+              <i className="fa fa-desktop" />
+            </a>
+          </li>
+        </ul>
+      </div>
+    );
+  }
 
-    showRaft = async () => {
-      if (!this.state.raft) {
-        this.setState({raft: true})
-        let count, line, position;
-        count = 0;
-        line = 0;
+  showRaft = async () => {
+    if (!this.state.raft) {
+      this.setState({ raft: true });
+      let count, line, position;
+      count = 0;
+      line = 0;
+      position = 0;
+      const rafts = [];
+      lsstFOV.forEach(lineArr => {
+        lineArr.forEach(el => {
+          if (el !== 'NNN') {
+            const raft = this.addRaftOverlay(position, line, el);
+            rafts.push(raft);
+            count = count + 1;
+          }
+          position = position + 1;
+        });
         position = 0;
-        const rafts = [];
-        lsstFOV.forEach(lineArr => {
-          lineArr.forEach(el => {
-            if (el !== 'NNN') {
-              const raft = this.addRaftOverlay(position, line, el);
-              rafts.push(raft);
-              count = count + 1;
-            }
-            position = position + 1;
-          });
-          position = 0;
-          line = line + 1;
-        });
-        this.setState({ rafts: rafts });
-      }
-      else {
-        this.state.rafts.forEach(raft => {
-          this.viewer.removeOverlay(raft);
-        })
-        this.setState({ raft: false, rafts: [] })
-      }
-    }
-
-    addRaftOverlay = (x, y) => {
-      const raft = document.createElement("div");
-      raft.className = "raft-overlay";
-      if (x % 3 === 0 && y % 3 === 0)
-        this.viewer.addOverlay({
-          element: raft,
-          location: new OpenSeadragonLib.Rect(x, y, 3, 3),
-          rotationMode: OpenSeadragonLib.OverlayRotationMode.BOUNDING_BOX
-        });
-      return raft;
-    }
-
-    addCcdOverlay = (x, y, name) => {
-      const ccd = document.createElement("div");
-      ccd.className = "ccd-overlay";
-      ccd.textContent = name;
-      this.viewer.addOverlay({
-        element: ccd,
-        location: new OpenSeadragonLib.Rect(x, y, 1, 1),
-        rotationMode: OpenSeadragonLib.OverlayRotationMode.BOUNDING_BOX
+        line = line + 1;
       });
-      return ccd;
+      this.setState({ rafts: rafts });
+    } else {
+      this.state.rafts.forEach(raft => {
+        this.viewer.removeOverlay(raft);
+      });
+      this.setState({ raft: false, rafts: [] });
     }
+  };
 
-    showCcd = async () => {
-      if (!this.state.ccd) {
-        this.setState({ccd: true})
-        let count, line, position;
-        count = 0;
-        line = 0;
+  addRaftOverlay = (x, y) => {
+    const raft = document.createElement('div');
+    raft.className = 'raft-overlay';
+    if (x % 3 === 0 && y % 3 === 0)
+      this.viewer.addOverlay({
+        element: raft,
+        location: new OpenSeadragonLib.Rect(x, y, 3, 3),
+        rotationMode: OpenSeadragonLib.OverlayRotationMode.BOUNDING_BOX,
+      });
+    return raft;
+  };
+
+  addCcdOverlay = (x, y, name) => {
+    const ccd = document.createElement('div');
+    ccd.className = 'ccd-overlay';
+    ccd.textContent = name;
+    this.viewer.addOverlay({
+      element: ccd,
+      location: new OpenSeadragonLib.Rect(x, y, 1, 1),
+      rotationMode: OpenSeadragonLib.OverlayRotationMode.BOUNDING_BOX,
+    });
+    return ccd;
+  };
+
+  showCcd = async () => {
+    if (!this.state.ccd) {
+      this.setState({ ccd: true });
+      let count, line, position;
+      count = 0;
+      line = 0;
+      position = 0;
+      const ccds = [];
+      lsstFOV.forEach(lineArr => {
+        lineArr.forEach(el => {
+          if (el !== 'NNN') {
+            const ccd = this.addCcdOverlay(position, line, el);
+            ccds.push(ccd);
+            count = count + 1;
+          }
+          position = position + 1;
+        });
         position = 0;
-        const ccds = []
-        lsstFOV.forEach(lineArr => {
-          lineArr.forEach(el => {
-            if (el !== 'NNN') {
-              const ccd = this.addCcdOverlay(position, line, el);
-              ccds.push(ccd);
-              count = count + 1;
-            }
-            position = position + 1;
-          });
-          position = 0;
-          line = line + 1;
-        });
-        this.setState({ ccds: ccds });
-      }
-      else {
-        this.state.ccds.forEach(ccd => {
-          this.viewer.removeOverlay(ccd);
-        })
-        this.setState({ ccd: false, ccds: [] })
-      }
-    }
-
-    addCcdOverlay = (x, y, name) => {
-      const ccd = document.createElement("div");
-      ccd.className = "ccd-overlay";
-      ccd.textContent = name;
-      this.viewer.addOverlay({
-        id: 'ccd',
-        element: ccd,
-        location: new OpenSeadragonLib.Rect(x, y, 1, 1),
-        rotationMode: OpenSeadragonLib.OverlayRotationMode.BOUNDING_BOX
+        line = line + 1;
       });
-      return ccd;
+      this.setState({ ccds: ccds });
+    } else {
+      this.state.ccds.forEach(ccd => {
+        this.viewer.removeOverlay(ccd);
+      });
+      this.setState({ ccd: false, ccds: [] });
     }
+  };
 
-    initSeaDragon = async () => {
-        let self = this
-        let { id } = this.props
-        self.viewer = OpenSeadragonLib({
-          id: id,
-          visibilityRatio: 0.01,
-          constrainDuringPan: false,
-          defaultZoomLevel: 0.04,
-          minZoomLevel: 0.04,
-          maxZoomLevel: 400,
-          zoomInButton: "zoom-in",
-          zoomOutButton: "zoom-out",
-          homeButton: "reset",
-          fullPageButton: "full-page",
-          nextButton: "next",
-          showNavigator: true,
-          navigatorId: "navigator",
-          // debugMode: true,
-          tileSources: []
-        });
-    }
+  addCcdOverlay = (x, y, name) => {
+    const ccd = document.createElement('div');
+    ccd.className = 'ccd-overlay';
+    ccd.textContent = name;
+    this.viewer.addOverlay({
+      id: 'ccd',
+      element: ccd,
+      location: new OpenSeadragonLib.Rect(x, y, 1, 1),
+      rotationMode: OpenSeadragonLib.OverlayRotationMode.BOUNDING_BOX,
+    });
+    return ccd;
+  };
 
-    addImage = (x,y,name) => {
-      const url = process.env.NODE_ENV === 'development' ? `http://expviewer.linea.gov.br/iipserver?IIIF=exps/${name}.tif` :`${window.origin}/iipserver?IIIF=exps/${name}.tif`;
-        this.viewer.addTiledImage({
-          tileSource: {
-            "@context": "./context.json",
-            "@id": url,
-            height: 4150,
+  initSeaDragon = () => {
+    this.viewer = OpenSeadragonLib({
+      id: 'ocd-viewer',
+      visibilityRatio: 0.01,
+      constrainDuringPan: false,
+      defaultZoomLevel: 0.04,
+      minZoomLevel: 0.04,
+      maxZoomLevel: 400,
+      zoomInButton: 'zoom-in',
+      zoomOutButton: 'zoom-out',
+      homeButton: 'reset',
+      fullPageButton: 'full-page',
+      nextButton: 'next',
+      showNavigator: true,
+      navigatorId: 'navigator',
+      // debugMode: true,
+      tileSources: [],
+    });
+  };
+
+  addImage = (x, y, name) => {
+    const url =
+      process.env.NODE_ENV === 'development'
+        ? `http://expviewer.linea.gov.br/iipserver?IIIF=exps/${name}.tif`
+        : `${window.origin}/iipserver?IIIF=exps/${name}.tif`;
+    this.viewer.addTiledImage({
+      tileSource: {
+        '@context': './context.json',
+        '@id': url,
+        height: 4150,
+        width: 4150,
+        protocol: 'http://iiif.io/api/image',
+        tiles: [
+          {
+            scaleFactors: [1, 2, 4, 8, 16, 32, 64, 128, 256],
             width: 4150,
-            protocol: "http://iiif.io/api/image",
-            tiles: [
-              {
-                scaleFactors: [1, 2, 4, 8, 16, 32, 64, 128, 256],
-                width: 4150,
-                tileOverlap: 0
-              }
-            ]
+            tileOverlap: 0,
           },
-          x: x,
-          y: y
-        });
-    }
+        ],
+      },
+      x: x,
+      y: y,
+    });
+  };
 
-    renderImages = () => {
-        let count, line, position;
-        count = 0;
-        line = 0;
-        position = 0;
-        lsstFOV.forEach(lineArr => {
-          lineArr.forEach(el => {
-            if (el !== 'NNN') {
-              this.addImage(position, line, el);
-              count = count + 1;
-            }
-            position = position + 1;
-          });
-          position = 0;
-          line = line + 1;
-        });
-    }
+  renderImages = () => {
+    let count, line, position;
+    count = 0;
+    line = 0;
+    position = 0;
+    lsstFOV.forEach(lineArr => {
+      lineArr.forEach(el => {
+        if (el !== 'NNN') {
+          this.addImage(position, line, el);
+          count = count + 1;
+        }
+        position = position + 1;
+      });
+      position = 0;
+      line = line + 1;
+    });
+  };
 
-    componentDidMount() {
-        this.initSeaDragon()
-        this.renderImages();
-    }
-    shouldComponentUpdate(nextProps, nextState) {
-        return false
-    }
+  componentDidMount() {
+    this.initSeaDragon();
+    this.renderImages();
+  }
 }
 
-OpenSeaDragon.defaultProps = { id: 'ocd-viewer', type: 'legacy-image-pyramid' }
-
 export default OpenSeaDragon;
-
