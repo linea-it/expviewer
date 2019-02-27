@@ -118,12 +118,14 @@ class OpenSeaDragon extends React.Component {
     addRaftOverlay = (x, y) => {
       const raft = document.createElement("div");
       raft.className = "raft-overlay";
-      if (x % 3 === 0 && y % 3 === 0)
+      if (x % 3 === 0 && y % 3 === 0) {
+        raft.textContent = `(${x/3},${4-y/3})`;
         this.viewer.addOverlay({
           element: raft,
           location: new OpenSeadragonLib.Rect(x, y, 3, 3),
           rotationMode: OpenSeadragonLib.OverlayRotationMode.BOUNDING_BOX
         });
+      }
       return raft;
     }
 
