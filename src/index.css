@@ -25,6 +25,10 @@ html, body, #container, .app {
   .raft-overlay {
     outline: 1px solid #1DFF00;
     color: #1DFF00;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
     opacity: 1;
   }
   .ccd-overlay {
