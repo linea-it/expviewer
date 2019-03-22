@@ -9,13 +9,25 @@ class Socket extends Component {
   // };
 
   handleData = data => {
-    // const result = JSON.parse(data);
+    const result = JSON.parse(data);
 
-    console.log(data);
+    console.log(result);
   };
 
   storeWebsocketRef = socket => {
     this.socket = socket;
+  };
+
+  getAllImages = () => {
+    this.socket.state.ws.send("getAllImages");
+  };
+
+  clearImages = () => {
+    this.socket.state.ws.send("clearImages");
+  };
+
+  findImages = () => {
+    this.socket.state.ws.send("findImages");
   };
 
   render() {
@@ -24,9 +36,12 @@ class Socket extends Component {
     //         ? process.env.REACT_APP_WEBSOCKET
     //         : window.origin.replace('http', 'ws');
 
-    const url = 'ws://localhost:5678';
+    const url = "ws://localhost:5678";
     return (
       <div>
+        <p onClick={this.getAllImages}>GET</p>
+        <p onClick={this.clearImages}>CLEAR</p>
+        <p onClick={this.findImages}>FIND</p>
         <Connection
           ref={this.storeWebsocketRef}
           url={url}
