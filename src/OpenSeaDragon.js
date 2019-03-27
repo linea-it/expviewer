@@ -1,5 +1,6 @@
 import React from 'react';
 import './index.css';
+import Websocket from "./websocket/websocket";
 
 import OpenSeadragonLib from 'openseadragon';
 
@@ -29,6 +30,33 @@ class OpenSeaDragon extends React.Component {
     raft: false,
     ccds: [],
     rafts: [],
+    images: [],
+  };
+
+  getImages = images => {
+    this.renderImages();
+    this.setState({ images });
+  }
+
+  test = () => {
+    console.log(this)
+  }
+
+  saveRef = ref => {
+    this.socket=ref;
+  }
+
+  getAllImages = () => {
+    this.socket.state.ws.send("getAllImages");
+  };
+
+  clearImages = () => {
+    this.viewer.destroy();
+    this.socket.state.ws.send("clearImages");
+  };
+
+  findImages = () => {
+    this.socket.state.ws.send("findImages");
   };
 
   render() {
@@ -39,11 +67,30 @@ class OpenSeaDragon extends React.Component {
           this.el = node;
         }}
       >
+        <Websocket getImages={this.getImages} saveRef={this.saveRef} />
         <div className="navigator-wrapper c-shadow">
           <div id="navigator" />
         </div>
         <div className="openseadragon" id="ocd-viewer" />
         <ul className="ocd-toolbar">
+          <li>
+            {/* eslint-disable-next-line*/}
+            <a onClick={this.clearImages}>
+              <i className="fa fa-eraser" />
+            </a>
+          </li>
+          <li>
+            {/* eslint-disable-next-line*/}
+            <a onClick={this.findImages}>
+              <i className="fa fa-camera" />
+            </a>
+          </li>
+          <li>
+            {/* eslint-disable-next-line*/}
+            <a onClick={this.test}>
+              <i className="fa fa-cubes" />
+            </a>
+          </li>
           <li>
             {/* eslint-disable-next-line*/}
             <a onClick={this.showRaft}>
@@ -234,7 +281,7 @@ class OpenSeaDragon extends React.Component {
     position = 0;
     lsstFOV.forEach(lineArr => {
       lineArr.forEach(el => {
-        if (el !== 'NNN') {
+        if (el !== "NNN" && this.state.images.includes(el)) {
           this.addImage(position, line, el);
           count = count + 1;
         }

@@ -1,33 +1,30 @@
 import React, { Component } from 'react';
 import Connection from './connection';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 class Socket extends Component {
-  // static propTypes = {
-  //     connected: PropTypes.func.isRequired,
-  //     disconnected: PropTypes.func.isRequired,
-  // };
+  static propTypes = {
+      saveRef: PropTypes.func.isRequired,
+      getImages: PropTypes.func.isRequired,
+  };
+
+  state = {
+    images: [],
+    connected: "No"
+  };
 
   handleData = data => {
     const result = JSON.parse(data);
-
+    if (result && result.status) this.setState({ connected: "Yes" });
+    if (result && result.images) {
+      this.props.getImages(result.images);
+      this.setState({ images: result.images });
+    }
     console.log(result);
   };
 
-  storeWebsocketRef = socket => {
-    this.socket = socket;
-  };
-
-  getAllImages = () => {
-    this.socket.state.ws.send("getAllImages");
-  };
-
-  clearImages = () => {
-    this.socket.state.ws.send("clearImages");
-  };
-
-  findImages = () => {
-    this.socket.state.ws.send("findImages");
+  handleConnection = connected => {
+    this.setState({ connected });
   };
 
   render() {
@@ -39,13 +36,16 @@ class Socket extends Component {
     const url = "ws://localhost:5678";
     return (
       <div>
-        <p onClick={this.getAllImages}>GET</p>
+        {/* <p onClick={this.getAllImages}>GET</p>
         <p onClick={this.clearImages}>CLEAR</p>
         <p onClick={this.findImages}>FIND</p>
+        <p>Connected: {this.state.connected}</p> */}
         <Connection
-          ref={this.storeWebsocketRef}
+          ref={this.props.saveRef}
           url={url}
           onMessage={this.handleData}
+          onOpen={() => this.handleConnection("ok")}
+          onClose={() => this.handleConnection("no")}
           //   onOpen={this.props.connected}
           //   onClose={this.props.disconnected}
           debug={true}
