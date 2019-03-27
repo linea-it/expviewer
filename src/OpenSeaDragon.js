@@ -34,6 +34,12 @@ class OpenSeaDragon extends React.Component {
   };
 
   getImages = images => {
+    // console.log(images)
+    images.forEach(im => {
+      if (!this.state.images.includes(im)){
+        console.log(this.state.images.includes(im))
+      }
+    })
     this.setState({ images });
   }
 
@@ -53,6 +59,7 @@ class OpenSeaDragon extends React.Component {
   };
 
   clearImages = () => {
+    this.viewer.destroy();
     this.socket.state.ws.send("clearImages");
   };
 

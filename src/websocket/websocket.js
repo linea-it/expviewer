@@ -20,7 +20,7 @@ class Socket extends Component {
       this.props.getImages(result.images);
       this.setState({ images: result.images });
     }
-    console.log(result);
+    // console.log(result);
   };
 
   handleConnection = connected => {
