@@ -31,23 +31,27 @@ class OpenSeaDragon extends React.Component {
     ccds: [],
     rafts: [],
     images: [],
+    positions: {},
   };
 
   getImages = images => {
-    // console.log(images)
     images.forEach(im => {
       if (!this.state.images.includes(im)){
-        console.log(this.state.images.includes(im))
+        const x = this.state.positions[im][0];
+        const y = this.state.positions[im][1];
+        this.addImage(x, y, im);
       }
     })
     this.setState({ images });
   }
 
   test = () => {
-    this.viewer.destroy();
-    this.initSeaDragon();
-    this.renderImages();
-    console.log(this)
+    // console.log(this.state);
+
+    // this.viewer.destroy();
+    // this.initSeaDragon();
+    // this.renderImages();
+    console.log(this.viewer.viewport)
   }
 
   saveRef = ref => {
@@ -60,6 +64,8 @@ class OpenSeaDragon extends React.Component {
 
   clearImages = () => {
     this.viewer.destroy();
+    this.initSeaDragon();
+    this.setState({ images: [] });
     this.socket.state.ws.send("clearImages");
   };
 
@@ -90,13 +96,7 @@ class OpenSeaDragon extends React.Component {
           <li>
             {/* eslint-disable-next-line*/}
             <a onClick={this.findImages}>
-              <i className="fa fa-camera" />
-            </a>
-          </li>
-          <li>
-            {/* eslint-disable-next-line*/}
-            <a onClick={this.test}>
-              <i className="fa fa-cubes" />
+              <i className="fa fa-play" />
             </a>
           </li>
           <li>
@@ -244,6 +244,7 @@ class OpenSeaDragon extends React.Component {
       constrainDuringPan: false,
       defaultZoomLevel: 0.04,
       minZoomLevel: 0.04,
+      homeFillsViewer: true,
       maxZoomLevel: 400,
       zoomInButton: 'zoom-in',
       zoomOutButton: 'zoom-out',
@@ -300,7 +301,26 @@ class OpenSeaDragon extends React.Component {
     });
   };
 
+  mapPositions = () => {
+    let y, x;
+    y = 0;
+    x = 0;
+    const positions = {}
+    lsstFOV.forEach(lineArr => {
+      lineArr.forEach(el => {
+        if (el !== "NNN") {
+          positions[el] = [x, y]
+        }
+        x = x + 1;
+      });
+      x = 0;
+      y = y + 1;
+    });
+    this.setState({ positions })
+  }
+
   componentDidMount() {
+    this.mapPositions();
     this.initSeaDragon();
     this.renderImages();
   }
