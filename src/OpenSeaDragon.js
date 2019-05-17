@@ -1,6 +1,6 @@
 import React from 'react';
 import './index.css';
-import Websocket from "./websocket/websocket";
+import Websocket from './websocket/websocket';
 
 import OpenSeadragonLib from 'openseadragon';
 
@@ -35,46 +35,45 @@ class OpenSeaDragon extends React.Component {
   };
 
   getImages = images => {
-    console.log("getImages: ", images)
+    console.log('getImages: ', images);
     images.forEach(im => {
       console.log(im);
-      im = im.replace('.tif', '')
+      im = im.replace('.tif', '');
       if (!this.state.images.includes(im)) {
         const x = this.state.positions[im][0];
         const y = this.state.positions[im][1];
         this.addImage(x, y, im);
       }
-    })
+    });
 
     this.setState({ images });
-  }
+  };
 
   test = () => {
     // console.log(this.state);
-
     // this.viewer.destroy();
     // this.initSeaDragon();
     // this.renderImages();
     // console.log(this.viewer.viewport)
-  }
+  };
 
   saveRef = ref => {
     this.socket = ref;
-  }
+  };
 
   getAllImages = () => {
-    this.socket.state.ws.send("getAllImages");
+    this.socket.state.ws.send('getAllImages');
   };
 
   clearImages = () => {
     this.viewer.destroy();
     this.initSeaDragon();
     this.setState({ images: [] });
-    this.socket.state.ws.send("clearImages");
+    this.socket.state.ws.send('clearImages');
   };
 
   findImages = () => {
-    this.socket.state.ws.send("findImages");
+    this.socket.state.ws.send('findImages');
   };
 
   render() {
@@ -294,7 +293,7 @@ class OpenSeaDragon extends React.Component {
     position = 0;
     lsstFOV.forEach(lineArr => {
       lineArr.forEach(el => {
-        if (el !== "NNN" && this.state.images.includes(el)) {
+        if (el !== 'NNN' && this.state.images.includes(el)) {
           this.addImage(position, line, el);
           count = count + 1;
         }
@@ -309,19 +308,19 @@ class OpenSeaDragon extends React.Component {
     let y, x;
     y = 0;
     x = 0;
-    const positions = {}
+    const positions = {};
     lsstFOV.forEach(lineArr => {
       lineArr.forEach(el => {
-        if (el !== "NNN") {
-          positions[el] = [x, y]
+        if (el !== 'NNN') {
+          positions[el] = [x, y];
         }
         x = x + 1;
       });
       x = 0;
       y = y + 1;
     });
-    this.setState({ positions })
-  }
+    this.setState({ positions });
+  };
 
   componentDidMount() {
     this.mapPositions();

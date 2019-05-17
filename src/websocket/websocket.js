@@ -10,12 +10,12 @@ class Socket extends Component {
 
   state = {
     images: [],
-    connected: "No"
+    connected: 'No',
   };
 
   handleData = data => {
     const result = JSON.parse(data);
-    if (result && result.status) this.setState({ connected: "Yes" });
+    if (result && result.status) this.setState({ connected: 'Yes' });
     if (result && result.images) {
       this.props.getImages(result.images);
       this.setState({ images: result.images });
@@ -33,7 +33,7 @@ class Socket extends Component {
     //         ? process.env.REACT_APP_WEBSOCKET
     //         : window.origin.replace('http', 'ws');
 
-    const url = "ws://localhost:5678/ws";
+    const url = 'ws://localhost:5678/ws';
     return (
       <div>
         {/* <p onClick={this.getAllImages}>GET</p>
@@ -44,8 +44,8 @@ class Socket extends Component {
           ref={this.props.saveRef}
           url={url}
           onMessage={this.handleData}
-          onOpen={() => this.handleConnection("ok")}
-          onClose={() => this.handleConnection("no")}
+          onOpen={() => this.handleConnection('ok')}
+          onClose={() => this.handleConnection('no')}
           //   onOpen={this.props.connected}
           //   onClose={this.props.disconnected}
           debug={true}
