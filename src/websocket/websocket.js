@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 
 class Socket extends Component {
   static propTypes = {
-      saveRef: PropTypes.func.isRequired,
-      getImages: PropTypes.func.isRequired,
+    saveRef: PropTypes.func.isRequired,
+    getImages: PropTypes.func.isRequired,
   };
 
   state = {
@@ -33,7 +33,7 @@ class Socket extends Component {
     //         ? process.env.REACT_APP_WEBSOCKET
     //         : window.origin.replace('http', 'ws');
 
-    const url = "ws://localhost:5678";
+    const url = "ws://localhost:5678/ws";
     return (
       <div>
         {/* <p onClick={this.getAllImages}>GET</p>
