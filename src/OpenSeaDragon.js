@@ -92,18 +92,6 @@ class OpenSeaDragon extends React.Component {
         <ul className="ocd-toolbar">
           <li>
             {/* eslint-disable-next-line*/}
-            <a onClick={this.clearImages}>
-              <i className="fa fa-eraser" />
-            </a>
-          </li>
-          <li>
-            {/* eslint-disable-next-line*/}
-            <a onClick={this.findImages}>
-              <i className="fa fa-play" />
-            </a>
-          </li>
-          <li>
-            {/* eslint-disable-next-line*/}
             <a onClick={this.showRaft}>
               <i className="fa fa-th-large" />
             </a>
@@ -264,7 +252,7 @@ class OpenSeaDragon extends React.Component {
   addImage = (x, y, name) => {
     const url =
       process.env.NODE_ENV === 'development'
-        ? `http://expviewer.linea.gov.br/iipserver?IIIF=exps/${name}.tif`
+        ? `${process.env.REACT_APP_IIPSERVER}/iipserver?IIIF=exps/${name}.tif`
         : `${window.origin}/iipserver?IIIF=exps/${name}.tif`;
     this.viewer.addTiledImage({
       tileSource: {
