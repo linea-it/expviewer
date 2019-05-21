@@ -1,3 +1,4 @@
+/* eslint-disable no-fallthrough */
 import React from 'react';
 import './index.css';
 import Websocket from './websocket/websocket';
@@ -33,7 +34,8 @@ class OpenSeaDragon extends React.Component {
     images: [],
     image_name: '',
     positions: {},
-
+    status_name: '',
+    status_class: '',
   };
 
   getImages = images => {
@@ -70,34 +72,60 @@ class OpenSeaDragon extends React.Component {
     });
   };
 
-
-  test = () => {
-    // console.log(this.state);
-    // this.viewer.destroy();
-    // this.initSeaDragon();
-    // this.renderImages();
-    // console.log(this.viewer.viewport)
-  };
+  // test = () => {
+  //   console.log(this.state);
+  //   this.viewer.destroy();
+  //   this.initSeaDragon();
+  //   this.renderImages();
+  //   console.log(this.viewer.viewport)
+  // };
 
   saveRef = ref => {
     this.socket = ref;
   };
 
-  getAllImages = () => {
-    this.socket.state.ws.send('getAllImages');
-  };
+  // getAllImages = () => {
+  //   this.socket.state.ws.send('getAllImages');
+  // };
 
   clearImages = () => {
-    console.log("clearImages()")
+    console.log('clearImages()');
+    // console.log(this.state)
     this.viewer.destroy();
     this.initSeaDragon();
-    this.setState({ images: [] });
+    this.setState({ images: [] }, () => {
+      // this.showRaft();
+      // this.showCcd();
+    });
     // this.socket.state.ws.send('clearImages');
   };
 
   // findImages = () => {
   //   this.socket.state.ws.send('findImages');
   // };
+
+  onChangeStatus = status => {
+    let status_name = '';
+    let status_class = '';
+    switch (status) {
+      case 'ok':
+        status_name = 'Connected';
+        status_class = 'websocket-status success';
+        break;
+      case 'no':
+        status_name = 'Closed';
+        status_class = 'websocket-status warning';
+        break;
+      case 'receive':
+        status_name = 'Recieved Message';
+        status_class = 'websocket-status info';
+        break;
+    }
+    this.setState({
+      status_name: status_name,
+      status_class: status_class,
+    });
+  };
 
   render() {
     return (
@@ -107,18 +135,17 @@ class OpenSeaDragon extends React.Component {
           this.el = node;
         }}
       >
-        <Websocket getImages={this.getImages} saveRef={this.saveRef} />
+        <Websocket
+          getImages={this.getImages}
+          saveRef={this.saveRef}
+          status={this.onChangeStatus}
+        />
         <div className="navigator-wrapper c-shadow">
           <div id="navigator" />
         </div>
         <div className="openseadragon" id="ocd-viewer" />
 
-        <div className="top-toolbar">
-          <p>
-            {/* eslint-disable-next-line*/}
-            {this.state.image_name}
-          </p>
-        </div>
+        <div className="top-toolbar">{this.state.image_name}</div>
 
         <ul className="ocd-toolbar">
           <li>
@@ -158,6 +185,13 @@ class OpenSeaDragon extends React.Component {
             </a>
           </li>
         </ul>
+        <div className="bottom-toolbar">
+          <div className="vertical-center">
+            <span className={this.state.status_class}>
+              {this.state.status_name}
+            </span>
+          </div>
+        </div>
       </div>
     );
   }
