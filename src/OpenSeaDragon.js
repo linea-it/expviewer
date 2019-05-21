@@ -31,13 +31,30 @@ class OpenSeaDragon extends React.Component {
     ccds: [],
     rafts: [],
     images: [],
+    image_name: '',
     positions: {},
+
   };
 
   getImages = images => {
     console.log('getImages: ', images);
+    let img_name = '';
+
     images.forEach((im, xx) => {
-      console.log(im);
+      xx = im.replace('.tif', '');
+      xx = xx.split('-')[2];
+      img_name = im.substr(0, im.indexOf('-' + xx));
+
+      if (this.state.image_name !== img_name) {
+        this.clearImages();
+        return false;
+      }
+    });
+
+    this.setState({ image_name: img_name });
+
+    images.forEach((im, xx) => {
+      // console.log(im);
       xx = im.replace('.tif', '');
       xx = xx.split('-')[2];
 
@@ -48,8 +65,11 @@ class OpenSeaDragon extends React.Component {
       }
     });
 
-    this.setState({ images });
+    this.setState({
+      images: images,
+    });
   };
+
 
   test = () => {
     // console.log(this.state);
@@ -68,15 +88,16 @@ class OpenSeaDragon extends React.Component {
   };
 
   clearImages = () => {
+    console.log("clearImages()")
     this.viewer.destroy();
     this.initSeaDragon();
     this.setState({ images: [] });
-    this.socket.state.ws.send('clearImages');
+    // this.socket.state.ws.send('clearImages');
   };
 
-  findImages = () => {
-    this.socket.state.ws.send('findImages');
-  };
+  // findImages = () => {
+  //   this.socket.state.ws.send('findImages');
+  // };
 
   render() {
     return (
@@ -91,6 +112,14 @@ class OpenSeaDragon extends React.Component {
           <div id="navigator" />
         </div>
         <div className="openseadragon" id="ocd-viewer" />
+
+        <div className="top-toolbar">
+          <p>
+            {/* eslint-disable-next-line*/}
+            {this.state.image_name}
+          </p>
+        </div>
+
         <ul className="ocd-toolbar">
           <li>
             {/* eslint-disable-next-line*/}
@@ -229,6 +258,19 @@ class OpenSeaDragon extends React.Component {
     });
     return ccd;
   };
+
+  // addImageNameOverlay = (name) => {
+  //   const ccd = document.createElement('div');
+  //   ccd.className = 'raft-overlay';
+  //   ccd.textContent = name;
+  //   this.viewer.addOverlay({
+  //     id: 'image_name',
+  //     element: ccd,
+  //     location: new OpenSeadragonLib.Rect(7, 0, 1, 1),
+  //     rotationMode: OpenSeadragonLib.OverlayRotationMode.BOUNDING_BOX,
+  //   });
+  //   return ccd;
+  // };
 
   initSeaDragon = () => {
     this.viewer = OpenSeadragonLib({
