@@ -40,7 +40,7 @@ class OpenSeaDragon extends React.Component {
       console.log(im);
       xx = im.replace('.tif', '');
       xx = xx.split('-')[2];
-      
+
       if (!this.state.images.includes(xx)) {
         const x = this.state.positions[xx][0];
         const y = this.state.positions[xx][1];
