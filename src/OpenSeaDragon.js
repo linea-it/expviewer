@@ -36,12 +36,14 @@ class OpenSeaDragon extends React.Component {
 
   getImages = images => {
     console.log('getImages: ', images);
-    images.forEach(im => {
+    images.forEach((im, xx) => {
       console.log(im);
-      im = im.replace('.tif', '');
-      if (!this.state.images.includes(im)) {
-        const x = this.state.positions[im][0];
-        const y = this.state.positions[im][1];
+      xx = im.replace('.tif', '');
+      xx = xx.split('-')[2];
+      
+      if (!this.state.images.includes(xx)) {
+        const x = this.state.positions[xx][0];
+        const y = this.state.positions[xx][1];
         this.addImage(x, y, im);
       }
     });
@@ -252,8 +254,8 @@ class OpenSeaDragon extends React.Component {
   addImage = (x, y, name) => {
     const url =
       process.env.NODE_ENV === 'development'
-        ? `${process.env.REACT_APP_IIPSERVER}/iipserver?IIIF=exps/${name}.tif`
-        : `${window.origin}/iipserver?IIIF=exps/${name}.tif`;
+        ? `${process.env.REACT_APP_IIPSERVER}/iipserver?IIIF=${name}`
+        : `${window.origin}/iipserver?IIIF=${name}`;
     this.viewer.addTiledImage({
       tileSource: {
         '@context': './context.json',
