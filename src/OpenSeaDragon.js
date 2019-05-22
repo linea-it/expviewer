@@ -1,4 +1,3 @@
-/* eslint-disable no-fallthrough */
 import React from 'react';
 import './index.css';
 import Websocket from './websocket/websocket';
@@ -292,19 +291,6 @@ class OpenSeaDragon extends React.Component {
     });
     return ccd;
   };
-
-  // addImageNameOverlay = (name) => {
-  //   const ccd = document.createElement('div');
-  //   ccd.className = 'raft-overlay';
-  //   ccd.textContent = name;
-  //   this.viewer.addOverlay({
-  //     id: 'image_name',
-  //     element: ccd,
-  //     location: new OpenSeadragonLib.Rect(7, 0, 1, 1),
-  //     rotationMode: OpenSeadragonLib.OverlayRotationMode.BOUNDING_BOX,
-  //   });
-  //   return ccd;
-  // };
 
   initSeaDragon = () => {
     this.viewer = OpenSeadragonLib({

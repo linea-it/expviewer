@@ -35,7 +35,8 @@ class Socket extends Component {
     //         ? process.env.REACT_APP_WEBSOCKET
     //         : window.origin.replace('http', 'ws');
 
-    const url = 'ws://localhost:5678/ws';
+    // const url = 'ws://localhost:5678/ws';
+    const url = process.env.REACT_APP_WEBSOCKET;
     return (
       <div>
         {/* <p onClick={this.getAllImages}>GET</p>
