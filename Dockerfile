@@ -20,5 +20,10 @@ RUN sed --regexp-extended --in-place=.bak 's%^pid\s+/var/run/nginx.pid;%pid /var
 COPY --from=builder /src/app/build /var/www/expviewer
 RUN chgrp nginx /var/www/expviewer
 RUN chmod -R g+w /var/www/expviewer
-ADD nginx-proxy.conf /etc/nginx/conf.d/default.conf
+
 USER nginx
+
+COPY nginx-proxy.conf /etc/nginx/conf.d/default.conf
+WORKDIR /var/www/expviewer
+
+CMD ["/bin/bash", "-c", "nginx -g \"daemon off;\""]
