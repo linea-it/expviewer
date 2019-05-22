@@ -31,13 +31,31 @@ class OpenSeaDragon extends React.Component {
     ccds: [],
     rafts: [],
     images: [],
+    image_name: '',
     positions: {},
+    status_name: '',
+    status_class: '',
   };
 
   getImages = images => {
     console.log('getImages: ', images);
+    let img_name = '';
+
     images.forEach((im, xx) => {
-      console.log(im);
+      xx = im.replace('.tif', '');
+      xx = xx.split('-')[2];
+      img_name = im.substr(0, im.indexOf('-' + xx));
+
+      if (this.state.image_name !== img_name) {
+        this.clearImages();
+        return false;
+      }
+    });
+
+    this.setState({ image_name: img_name });
+
+    images.forEach((im, xx) => {
+      // console.log(im);
       xx = im.replace('.tif', '');
       xx = xx.split('-')[2];
 
@@ -48,34 +66,64 @@ class OpenSeaDragon extends React.Component {
       }
     });
 
-    this.setState({ images });
+    this.setState({
+      images: images,
+    });
   };
 
-  test = () => {
-    // console.log(this.state);
-    // this.viewer.destroy();
-    // this.initSeaDragon();
-    // this.renderImages();
-    // console.log(this.viewer.viewport)
-  };
+  // test = () => {
+  //   console.log(this.state);
+  //   this.viewer.destroy();
+  //   this.initSeaDragon();
+  //   this.renderImages();
+  //   console.log(this.viewer.viewport)
+  // };
 
   saveRef = ref => {
     this.socket = ref;
   };
 
-  getAllImages = () => {
-    this.socket.state.ws.send('getAllImages');
-  };
+  // getAllImages = () => {
+  //   this.socket.state.ws.send('getAllImages');
+  // };
 
   clearImages = () => {
+    console.log('clearImages()');
+    // console.log(this.state)
     this.viewer.destroy();
     this.initSeaDragon();
-    this.setState({ images: [] });
-    this.socket.state.ws.send('clearImages');
+    this.setState({ images: [] }, () => {
+      // this.showRaft();
+      // this.showCcd();
+    });
+    // this.socket.state.ws.send('clearImages');
   };
 
-  findImages = () => {
-    this.socket.state.ws.send('findImages');
+  // findImages = () => {
+  //   this.socket.state.ws.send('findImages');
+  // };
+
+  onChangeStatus = status => {
+    let status_name = '';
+    let status_class = '';
+    switch (status) {
+      case 'ok':
+        status_name = 'Connected';
+        status_class = 'websocket-status success';
+        break;
+      case 'no':
+        status_name = 'Closed';
+        status_class = 'websocket-status warning';
+        break;
+      case 'receive':
+        status_name = 'Recieved Message';
+        status_class = 'websocket-status info';
+        break;
+    }
+    this.setState({
+      status_name: status_name,
+      status_class: status_class,
+    });
   };
 
   render() {
@@ -86,11 +134,18 @@ class OpenSeaDragon extends React.Component {
           this.el = node;
         }}
       >
-        <Websocket getImages={this.getImages} saveRef={this.saveRef} />
+        <Websocket
+          getImages={this.getImages}
+          saveRef={this.saveRef}
+          status={this.onChangeStatus}
+        />
         <div className="navigator-wrapper c-shadow">
           <div id="navigator" />
         </div>
         <div className="openseadragon" id="ocd-viewer" />
+
+        <div className="top-toolbar">{this.state.image_name}</div>
+
         <ul className="ocd-toolbar">
           <li>
             {/* eslint-disable-next-line*/}
@@ -129,6 +184,13 @@ class OpenSeaDragon extends React.Component {
             </a>
           </li>
         </ul>
+        <div className="bottom-toolbar">
+          <div className="vertical-center">
+            <span className={this.state.status_class}>
+              {this.state.status_name}
+            </span>
+          </div>
+        </div>
       </div>
     );
   }

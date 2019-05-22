@@ -20,11 +20,13 @@ class Socket extends Component {
       this.props.getImages(result.images);
       this.setState({ images: result.images });
     }
+    this.props.status("receive")
     // console.log(result);
   };
 
   handleConnection = connected => {
     this.setState({ connected });
+    this.props.status(connected)
   };
 
   render() {
@@ -33,7 +35,8 @@ class Socket extends Component {
     //         ? process.env.REACT_APP_WEBSOCKET
     //         : window.origin.replace('http', 'ws');
 
-    const url = 'ws://localhost:5678/ws';
+    // const url = 'ws://localhost:5678/ws';
+    const url = process.env.REACT_APP_WEBSOCKET;
     return (
       <div>
         {/* <p onClick={this.getAllImages}>GET</p>

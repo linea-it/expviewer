@@ -43,3 +43,72 @@ html, body, #container, .app {
   .hidden {
     display: none !important;
   }
+
+
+  .top-toolbar {
+    width:100%; 
+    height: 56px; 
+    display:block; 
+    position:fixed; 
+    top:00px; 
+    right:1px; 
+    padding:0; 
+    z-index:5000; 
+    background:rgba(0,0,0,.6); 
+    color:#fff; 
+    text-align: center; 
+    font-size:1.6em; 
+    vertical-align: middle; 
+    line-height: 1.6em;
+  }
+  
+  .bottom-toolbar {
+    width:100%; 
+    height: 30px; 
+    display:block; 
+    position: relative;
+    bottom:0px; 
+    right:1px; 
+    padding:0; 
+    z-index:5000; 
+    /* background:rgba(0,0,0,.6);  */
+    color:#fff; 
+    text-align: center; 
+    font-size:1.6em; 
+    vertical-align: middle; 
+    line-height: 1.6em;
+  }
+
+  .vertical-center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    right: 15px;
+  }
+
+  .websocket-status {
+    display: inline-block;
+    padding: 2px 4px;
+    font-size: 11.844px;
+    font-weight: bold;
+    line-height: 16px;
+    color: #ffffff;
+    vertical-align: baseline;
+    white-space: nowrap;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #999999;
+
+  }
+
+  .success {
+    background-color: #468847;
+  }
+  .info {
+    background-color: #3a87ad;
+  }
+  .warning {
+    background-color: #b94a48;
+  }
+
