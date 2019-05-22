@@ -20,13 +20,13 @@ class Socket extends Component {
       this.props.getImages(result.images);
       this.setState({ images: result.images });
     }
-    this.props.status("receive")
+    this.props.status('receive');
     // console.log(result);
   };
 
   handleConnection = connected => {
     this.setState({ connected });
-    this.props.status(connected)
+    this.props.status(connected);
   };
 
   render() {
