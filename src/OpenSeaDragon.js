@@ -91,6 +91,7 @@ class OpenSeaDragon extends React.Component {
     console.log('clearImages()');
     // console.log(this.state)
     this.viewer.destroy();
+    this.viewer = null;
     this.initSeaDragon();
     this.setState({ images: [] }, () => {
       // this.showRaft();
@@ -316,8 +317,8 @@ class OpenSeaDragon extends React.Component {
   addImage = (x, y, name) => {
     const url =
       process.env.NODE_ENV === 'development'
-        ? `${process.env.REACT_APP_IIPSERVER}/iipserver?IIIF=${name}`
-        : `${window.origin}/iipserver?IIIF=${name}`;
+        ? `${process.env.REACT_APP_IIPSERVER}/iipserver/fcgi-bin/iipsrv.fcgi?IIIF=${name}`
+        : `${window.origin}/iipserver/fcgi-bin/iipsrv.fcgi?IIIF=${name}`;
     this.viewer.addTiledImage({
       tileSource: {
         '@context': './context.json',
