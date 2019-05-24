@@ -38,7 +38,7 @@ class OpenSeaDragon extends React.Component {
   };
 
   getImageName = img => {
-    console.log('getImageName(%o)', img);
+    // console.log('getImageName(%o)', img);
     return img.replace(img.substr(-8), '');
   };
 
@@ -46,8 +46,8 @@ class OpenSeaDragon extends React.Component {
     console.log('getImages: ', images);
     const img_name = this.getImageName(images[0]);
 
-    console.log('Image Name: %o', img_name);
     if (this.state.image_name !== img_name) {
+      console.log('Image Name: %o', img_name);
       console.log('Imagem anterior: %o', this.state.image_name);
 
       this.setState({ image_name: img_name, images: [] }, () => {
@@ -59,7 +59,6 @@ class OpenSeaDragon extends React.Component {
       });
     } else {
       images.forEach((im, xx) => {
-        // console.log(im);
         xx = im.replace('.tif', '');
         xx = xx.split('-')[2];
 
@@ -76,14 +75,6 @@ class OpenSeaDragon extends React.Component {
     }
   };
 
-  // test = () => {
-  //   console.log(this.state);
-  //   this.viewer.destroy();
-  //   this.initSeaDragon();
-  //   this.renderImages();
-  //   console.log(this.viewer.viewport)
-  // };
-
   saveRef = ref => {
     this.socket = ref;
   };
@@ -96,6 +87,7 @@ class OpenSeaDragon extends React.Component {
   clearImages = () => {
     console.log('clearImages()');
     // console.log(this.state)
+    this.viewer.navigator.destroy();
     this.viewer.destroy();
     this.viewer = null;
     this.initSeaDragon();
@@ -138,6 +130,14 @@ class OpenSeaDragon extends React.Component {
           this.el = node;
         }}
       >
+        <div className="top-toolbar">
+          {this.state.image_name}
+          <div className="vertical-center">
+            <span className={this.state.status_class}>
+              {this.state.status_name}
+            </span>
+          </div>
+        </div>
         <Websocket
           getImages={this.getImages}
           saveRef={this.saveRef}
@@ -147,9 +147,6 @@ class OpenSeaDragon extends React.Component {
           <div id="navigator" />
         </div>
         <div className="openseadragon" id="ocd-viewer" />
-
-        <div className="top-toolbar">{this.state.image_name}</div>
-
         <ul className="ocd-toolbar">
           <li>
             {/* eslint-disable-next-line*/}
@@ -188,13 +185,13 @@ class OpenSeaDragon extends React.Component {
             </a>
           </li>
         </ul>
-        <div className="bottom-toolbar">
+        {/* <div className="bottom-toolbar">
           <div className="vertical-center">
             <span className={this.state.status_class}>
               {this.state.status_name}
             </span>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }

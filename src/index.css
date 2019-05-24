@@ -11,7 +11,7 @@ html, body, #container, .app {
 
  
  .navigator-wrapper {position:fixed; left:5px; bottom:5px;
-    background:#000; overflow:hidden; width:166px; height:178px; border:solid 0px #ffffff; z-index:3100 }
+    background:rgba(0,0,0,.4); overflow:hidden; width:166px; height:178px; border:solid 0px #ffffff; z-index:3100 }
   #navigator {width:166px; height:178px; position:absolute; top:0;  }
   #navigator-displayregion {border-width:1px !important; border-color: #d53015 !important; z-index:4500 !important;
     background:rgba(0,0,0,.2) !important;}
@@ -54,7 +54,7 @@ html, body, #container, .app {
     right:1px; 
     padding:0; 
     z-index:5000; 
-    background:rgba(0,0,0,.6); 
+    background:rgba(0,0,0,.4); 
     color:#fff; 
     text-align: center; 
     font-size:1.6em; 
