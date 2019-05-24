@@ -37,38 +37,43 @@ class OpenSeaDragon extends React.Component {
     status_class: '',
   };
 
+  getImageName = img => {
+    console.log('getImageName(%o)', img);
+    return img.replace(img.substr(-8), '');
+  };
+
   getImages = images => {
     console.log('getImages: ', images);
-    let img_name = '';
+    const img_name = this.getImageName(images[0]);
 
-    images.forEach((im, xx) => {
-      xx = im.replace('.tif', '');
-      xx = xx.split('-')[2];
-      img_name = im.substr(0, im.indexOf('-' + xx));
+    console.log('Image Name: %o', img_name);
+    if (this.state.image_name !== img_name) {
+      console.log('Imagem anterior: %o', this.state.image_name);
 
-      if (this.state.image_name !== img_name) {
+      this.setState({ image_name: img_name, images: [] }, () => {
+        console.log('Callback troca de imagem.');
+
         this.clearImages();
-        return false;
-      }
-    });
 
-    this.setState({ image_name: img_name });
+        this.getImages(images);
+      });
+    } else {
+      images.forEach((im, xx) => {
+        // console.log(im);
+        xx = im.replace('.tif', '');
+        xx = xx.split('-')[2];
 
-    images.forEach((im, xx) => {
-      // console.log(im);
-      xx = im.replace('.tif', '');
-      xx = xx.split('-')[2];
+        if (!this.state.images.includes(xx)) {
+          const x = this.state.positions[xx][0];
+          const y = this.state.positions[xx][1];
+          this.addImage(x, y, im);
+        }
+      });
 
-      if (!this.state.images.includes(xx)) {
-        const x = this.state.positions[xx][0];
-        const y = this.state.positions[xx][1];
-        this.addImage(x, y, im);
-      }
-    });
-
-    this.setState({
-      images: images,
-    });
+      this.setState({
+        images: images,
+      });
+    }
   };
 
   // test = () => {
@@ -83,19 +88,18 @@ class OpenSeaDragon extends React.Component {
     this.socket = ref;
   };
 
-  // getAllImages = () => {
-  //   this.socket.state.ws.send('getAllImages');
-  // };
+  getAllImages = () => {
+    console.log('getAllImages()');
+    this.socket.state.ws.send('getAllImages');
+  };
 
   clearImages = () => {
     console.log('clearImages()');
     // console.log(this.state)
     this.viewer.destroy();
+    this.viewer = null;
     this.initSeaDragon();
-    this.setState({ images: [] }, () => {
-      // this.showRaft();
-      // this.showCcd();
-    });
+    // this.setState({ images: [] });
     // this.socket.state.ws.send('clearImages');
   };
 
