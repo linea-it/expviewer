@@ -56,7 +56,7 @@ html, body, #container, .app {
     z-index:5000; 
     background:rgba(0,0,0,.4); 
     color:#fff; 
-    text-align: center; 
+    text-align: left; 
     font-size:1.6em; 
     vertical-align: middle; 
     line-height: 1.6em;
@@ -79,6 +79,7 @@ html, body, #container, .app {
     line-height: 1.6em;
   }
 
+ 
   .vertical-center {
     margin: 0;
     position: absolute;
@@ -100,6 +101,10 @@ html, body, #container, .app {
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     background-color: #999999;
 
+  }
+
+  .image_name {
+    padding-left: 50px;
   }
 
   .success {

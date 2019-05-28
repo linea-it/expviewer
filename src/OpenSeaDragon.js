@@ -35,6 +35,7 @@ class OpenSeaDragon extends React.Component {
     positions: {},
     status_name: '',
     status_class: '',
+    total_images: [],
   };
 
   getImageName = img => {
@@ -50,13 +51,16 @@ class OpenSeaDragon extends React.Component {
       console.log('Image Name: %o', img_name);
       console.log('Imagem anterior: %o', this.state.image_name);
 
-      this.setState({ image_name: img_name, images: [] }, () => {
-        console.log('Callback troca de imagem.');
+      this.setState(
+        { image_name: img_name, images: [], total_images: [] },
+        () => {
+          console.log('Callback troca de imagem.');
 
-        this.clearImages();
+          this.clearImages();
 
-        this.getImages(images);
-      });
+          this.getImages(images);
+        }
+      );
     } else {
       images.forEach((im, xx) => {
         xx = im.replace('.tif', '');
@@ -66,6 +70,7 @@ class OpenSeaDragon extends React.Component {
           const x = this.state.positions[xx][0];
           const y = this.state.positions[xx][1];
           this.addImage(x, y, im);
+          this.state.total_images.push(im);
         }
       });
 
@@ -112,7 +117,7 @@ class OpenSeaDragon extends React.Component {
         status_class = 'websocket-status warning';
         break;
       case 'receive':
-        status_name = 'Recieved Message';
+        status_name = 'Received Message';
         status_class = 'websocket-status info';
         break;
     }
@@ -131,7 +136,7 @@ class OpenSeaDragon extends React.Component {
         }}
       >
         <div className="top-toolbar">
-          {this.state.image_name}
+          <div className="image_name">{this.state.image_name}</div>
           <div className="vertical-center">
             <span className={this.state.status_class}>
               {this.state.status_name}
