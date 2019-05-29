@@ -43,18 +43,11 @@ class OpenSeaDragon extends React.Component {
   };
 
   getImages = images => {
-    console.log('getImages: ', images);
     const img_name = this.getImageName(images[0]);
 
     if (this.state.image_name !== img_name) {
-      console.log('Image Name: %o', img_name);
-      console.log('Imagem anterior: %o', this.state.image_name);
-
       this.setState({ image_name: img_name, images: [] }, () => {
-        console.log('Callback troca de imagem.');
-
         this.clearImages();
-
         this.getImages(images);
       });
     } else {
@@ -80,24 +73,15 @@ class OpenSeaDragon extends React.Component {
   };
 
   getAllImages = () => {
-    console.log('getAllImages()');
     this.socket.state.ws.send('getAllImages');
   };
 
   clearImages = () => {
-    console.log('clearImages()');
-    // console.log(this.state)
     this.viewer.navigator.destroy();
     this.viewer.destroy();
     this.viewer = null;
     this.initSeaDragon();
-    // this.setState({ images: [] });
-    // this.socket.state.ws.send('clearImages');
   };
-
-  // findImages = () => {
-  //   this.socket.state.ws.send('findImages');
-  // };
 
   onChangeStatus = status => {
     let status_name = '';
@@ -112,7 +96,7 @@ class OpenSeaDragon extends React.Component {
         status_class = 'websocket-status warning';
         break;
       case 'receive':
-        status_name = 'Recieved Message';
+        status_name = 'Received Message';
         status_class = 'websocket-status info';
         break;
     }
@@ -131,7 +115,7 @@ class OpenSeaDragon extends React.Component {
         }}
       >
         <div className="top-toolbar">
-          {this.state.image_name}
+          <span>{this.state.image_name}</span>
           <div className="vertical-center">
             <span className={this.state.status_class}>
               {this.state.status_name}
@@ -309,7 +293,7 @@ class OpenSeaDragon extends React.Component {
       nextButton: 'next',
       showNavigator: true,
       navigatorId: 'navigator',
-      // debugMode: true,
+      //debugMode: true,
       tileSources: [],
     });
   };
