@@ -321,6 +321,7 @@ class OpenSeaDragon extends React.Component {
       x: x,
       y: y,
     });
+    this.viewer.viewport.goHome();
   };
 
   renderImages = () => {
