@@ -103,10 +103,18 @@ class OpenSeaDragon extends React.Component {
         status_class = 'websocket-status info';
         break;
     }
-    this.setState({
-      status_name: status_name,
-      status_class: status_class,
-    });
+
+    if (this.state.pause){
+      this.setState({
+        status_name: 'Paused',
+        status_class: 'websocket-status info',
+      });
+    } else {
+      this.setState({
+        status_name: status_name,
+        status_class: status_class,
+      });
+    }
   };
 
   onPause = () => {
