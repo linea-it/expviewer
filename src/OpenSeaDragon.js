@@ -35,6 +35,7 @@ class OpenSeaDragon extends React.Component {
     positions: {},
     status_name: '',
     status_class: '',
+    pause: false,
   };
 
   getImageName = img => {
@@ -45,26 +46,28 @@ class OpenSeaDragon extends React.Component {
   getImages = images => {
     const img_name = this.getImageName(images[0]);
 
-    if (this.state.image_name !== img_name) {
-      this.setState({ image_name: img_name, images: [] }, () => {
-        this.clearImages();
-        this.getImages(images);
-      });
-    } else {
-      images.forEach((im, xx) => {
-        xx = im.replace('.tif', '');
-        xx = xx.split('-')[2];
+    if (!this.state.pause) {
+      if (this.state.image_name !== img_name) {
+        this.setState({ image_name: img_name, images: [] }, () => {
+          this.clearImages();
+          this.getImages(images);
+        });
+      } else {
+        images.forEach((im, xx) => {
+          xx = im.replace('.tif', '');
+          xx = xx.split('-')[2];
 
-        if (!this.state.images.includes(xx)) {
-          const x = this.state.positions[xx][0];
-          const y = this.state.positions[xx][1];
-          this.addImage(x, y, im);
-        }
-      });
+          if (!this.state.images.includes(xx)) {
+            const x = this.state.positions[xx][0];
+            const y = this.state.positions[xx][1];
+            this.addImage(x, y, im);
+          }
+        });
 
-      this.setState({
-        images: images,
-      });
+        this.setState({
+          images: images,
+        });
+      }
     }
   };
 
@@ -106,6 +109,17 @@ class OpenSeaDragon extends React.Component {
     });
   };
 
+  onPause = () => {
+    console.log('onPause(%o)', !this.state.pause);
+    this.setState({
+      pause: !this.state.pause,
+    });
+  };
+
+  // openInNewTab = () =>{
+  //   console.log('openInNewTab()')
+  // }
+
   render() {
     return (
       <div
@@ -132,6 +146,17 @@ class OpenSeaDragon extends React.Component {
         </div>
         <div className="openseadragon" id="ocd-viewer" />
         <ul className="ocd-toolbar">
+          {/* <i className="fa fa-external-link" /> */}
+          <li>
+            {/* eslint-disable-next-line*/}
+            <a onClick={this.onPause}>
+              {this.state.pause ? (
+                <i className="fa fa-play" />
+              ) : (
+                  <i className="fa fa-pause" />
+                )}
+            </a>
+          </li>
           <li>
             {/* eslint-disable-next-line*/}
             <a onClick={this.showRaft}>
@@ -301,7 +326,9 @@ class OpenSeaDragon extends React.Component {
   addImage = (x, y, name) => {
     const url =
       process.env.NODE_ENV === 'development'
-        ? `${process.env.REACT_APP_IIPSERVER}/iipserver/fcgi-bin/iipsrv.fcgi?IIIF=${name}`
+        ? `${
+        process.env.REACT_APP_IIPSERVER
+        }/iipserver/fcgi-bin/iipsrv.fcgi?IIIF=${name}`
         : `${window.origin}/iipserver/fcgi-bin/iipsrv.fcgi?IIIF=${name}`;
     this.viewer.addTiledImage({
       tileSource: {
