@@ -1,7 +1,7 @@
 import React from 'react';
-import './index.css';
-import Websocket from './websocket/websocket';
+import PropTypes from 'prop-types';
 import OpenSeadragonLib from 'openseadragon';
+import './index.css';
 
 /*eslint-disable */
 const lsstFOV = [
@@ -23,52 +23,35 @@ const lsstFOV = [
 ];
 /*eslint-enable */
 
-class OpenSeaDragon extends React.Component {
-  state = {
-    ccd: false,
-    raft: false,
-    ccds: [],
-    rafts: [],
-    images: [],
-    image_name: '',
-    positions: {},
-    status_name: '',
-    status_class: '',
-    pause: false,
-  };
+class OpenSeaDragonPause extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      ccd: false,
+      raft: false,
+      ccds: [],
+      rafts: [],
+      images: [],
+      image_name: '',
+      positions: {},
+      status_name: '',
+      status_class: '',
+      pause: false,
+    };
+  }
 
   getImageName = img => {
+    // console.log('getImageName(%o)', img);
     return img.replace(img.substr(-8), '');
   };
 
   getImages = images => {
-    const img_name = this.getImageName(images[0]);
+    const img_name = this.props.match.params.image;
 
-    if (!this.state.pause) {
-      if (this.state.image_name !== img_name) {
-        this.setState({ image_name: img_name, images: [] }, () => {
-          this.clearImages();
-
-          this.viewer.opacity = 1;
-          this.getImages(images);
-        });
-      } else {
-        images.forEach((im, xx) => {
-          xx = im.replace('.tif', '');
-          xx = xx.split('-')[2];
-
-          if (!this.state.images.includes(xx)) {
-            const x = this.state.positions[xx][0];
-            const y = this.state.positions[xx][1];
-            this.addImage(x, y, im);
-          }
-        });
-
-        this.setState({
-          images: images,
-        });
-      }
-    }
+    this.setState({ image_name: img_name, images: [] }, () => {
+      this.clearImages();
+      this.getImages(images);
+    });
   };
 
   saveRef = ref => {
@@ -80,51 +63,13 @@ class OpenSeaDragon extends React.Component {
   };
 
   clearImages = () => {
-    this.viewer.opacity = 0;
-    this.viewer.world.removeAll();
+    this.viewer.navigator.destroy();
+    this.viewer.destroy();
+    this.viewer = null;
+    this.initSeaDragon();
   };
 
-  onChangeStatus = status => {
-    let status_name = '';
-    let status_class = '';
-    switch (status) {
-      case 'ok':
-        status_name = 'Connected';
-        status_class = 'websocket-status success';
-        break;
-      case 'no':
-        status_name = 'Closed';
-        status_class = 'websocket-status warning';
-        break;
-      case 'receive':
-        status_name = 'Received Message';
-        status_class = 'websocket-status info';
-        break;
-    }
-
-    if (this.state.pause) {
-      this.setState({
-        status_name: 'Paused',
-        status_class: 'websocket-status info',
-      });
-    } else {
-      this.setState({
-        status_name: status_name,
-        status_class: status_class,
-      });
-    }
-  };
-
-  // onPause = imageName => {
-  onPause = () => {
-    console.log('onPause(%o)', !this.state.pause);
-    this.setState({
-      pause: !this.state.pause,
-    });
-
-    // const win = window.open(`paused/${imageName}`, '_blank');
-    // win.focus();
-  };
+  j;
 
   // openInNewTab = () =>{
   //   console.log('openInNewTab()')
@@ -146,26 +91,11 @@ class OpenSeaDragon extends React.Component {
             </span>
           </div>
         </div>
-        <Websocket
-          getImages={this.getImages}
-          saveRef={this.saveRef}
-          status={this.onChangeStatus}
-        />
         <div className="navigator-wrapper c-shadow">
           <div id="navigator" />
         </div>
         <div className="openseadragon" id="ocd-viewer" />
         <ul className="ocd-toolbar">
-          <li>
-            {/* eslint-disable-next-line*/}
-            <a onClick={this.onPause}>
-              {this.state.pause ? (
-                <i className="fa fa-play" />
-              ) : (
-                <i className="fa fa-pause" />
-              )}
-            </a>
-          </li>
           <li>
             {/* eslint-disable-next-line*/}
             <a onClick={this.showRaft}>
@@ -203,6 +133,13 @@ class OpenSeaDragon extends React.Component {
             </a>
           </li>
         </ul>
+        {/* <div className="bottom-toolbar">
+          <div className="vertical-center">
+            <span className={this.state.status_class}>
+              {this.state.status_name}
+            </span>
+          </div>
+        </div> */}
       </div>
     );
   }
@@ -320,16 +257,13 @@ class OpenSeaDragon extends React.Component {
       nextButton: 'next',
       showNavigator: true,
       navigatorId: 'navigator',
-      immediateRender: true,
-      preload: true,
-      opacity: 0,
-      // debugMode: true,
+      //debugMode: true,
+      tileSources: [],
     });
   };
 
   addImage = (x, y, name) => {
-    const img_id = this.state.image_name.split('exp-')[1];
-
+    const img_id = this.props.match.params.image.split('exp-')[1];
     const url =
       process.env.NODE_ENV === 'development'
         ? `${
@@ -355,10 +289,8 @@ class OpenSeaDragon extends React.Component {
       },
       x: x,
       y: y,
-      preload: true,
     });
-
-    this.viewer.viewport.goHome(true);
+    this.viewer.viewport.goHome();
   };
 
   renderImages = () => {
@@ -377,8 +309,6 @@ class OpenSeaDragon extends React.Component {
       position = 0;
       line = line + 1;
     });
-
-    this.viewer.opacity = 1;
   };
 
   mapPositions = () => {
@@ -396,7 +326,6 @@ class OpenSeaDragon extends React.Component {
       x = 0;
       y = y + 1;
     });
-
     this.setState({ positions });
   };
 
@@ -405,6 +334,10 @@ class OpenSeaDragon extends React.Component {
     this.initSeaDragon();
     this.renderImages();
   }
+
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+  };
 }
 
-export default OpenSeaDragon;
+export default OpenSeaDragonPause;
